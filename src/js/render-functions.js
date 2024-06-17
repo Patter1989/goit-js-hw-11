@@ -1,6 +1,6 @@
-import SimpleLightbox from 'simplelightbox';
-import 'simplelightbox/dist/simple-lightbox.min.css';
+'use strict';
 
+//  ============functions==========
 
 function imageTemplate(images) {
   return `<li class="gallery-item">
@@ -26,12 +26,17 @@ function imageTemplate(images) {
         </li>
       </ul>
     </li>`;
-};
+}
 export function imagesTemplate(arr) {
-  return arr.map(imageTemplate).join('')
-};
+  return arr.map(imageTemplate).join('');
+}
 
+const loader = document.querySelector('.loader');
 
+export function showLoader() {
+  loader.classList.remove('visually-hidden');
+}
 
-
-
+export function closeLoader() {
+  loader.classList.add('visually-hidden');
+}

@@ -1,57 +1,61 @@
+'use strict';
+
+//  ============libraries import==========
+
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
 
-// import { galleryContainer } from "./js/render-functions";
+//  ============functions and img import==========
 
+import imageUrl from './img/alert-icon.svg';
 import { fetchImg } from './js/pixabay-api';
-import { imagesTemplate } from './js/render-functions';
+import { imagesTemplate, showLoader, closeLoader } from './js/render-functions';
 
-export const form = document.querySelector('.feedback-form');
-const gallery = document.querySelector('.gallery');
+//  ============main const==========
 
-form.addEventListener('submit', e => {
-  e.preventDefault();
-  const inputData = e.target.elements.searchImg.value;
-  console.log(inputData);
-  fetchImg(inputData)
-    .then(data => {
-      console.log(data.hits);
-      const markup = imagesTemplate(data.hits);
-      gallery.innerHTML = markup;
-    })
-    .catch(err => {});
-});
+const iziToastOptions = {
+  message:
+    'Sorry, there are no images matching your search query. Please, try again!',
+  messageColor: 'white',
+  backgroundColor: '#EF4040',
+  iconUrl: imageUrl,
+  maxWidth: '360px',
+  position: 'topRight',
+  theme: 'dark',
+};
 
-const lightbox = new SimpleLightbox('.gallery', {
+const lightBox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
 
-// function imageTemplate(images) {
-//   return `<li class="gallery-item">
-//     <a class="gallery-link" href="${images.largeImageURL}">
-//       <img class="gallery-image" src="${images.webformatURL}" alt="${images.tags}" />
-//     </a>
-//     <ul class="info-list">
-//         <li class="info-item">
-//           <h4 class="info-item-header">Likes</h4>
-//           <p class="info-item-value">${images.likes}</p>
-//         </li>
-//         <li class="info-item">
-//           <h4 class="info-item-header">Views</h4>
-//           <p class="info-item-value">${images.views}</p>
-//         </li>
-//         <li class="info-item">
-//           <h4 class="info-item-header">Comments</h4>
-//           <p class="info-item-value">${images.comments}</p>
-//         </li>
-//         <li class="info-item">
-//           <h4 class="info-item-header">Downloads</h4>
-//           <p class="info-item-value">${images.downloads}</p>
-//         </li>
-//       </ul>
-//     </li>`;
-// };
-// export function imagesTemplate(arr) {
-//   return arr.map(imageTemplate).join('')
-// };
+const form = document.querySelector('.search-form');
+const gallery = document.querySelector('.gallery');
+
+//  ============functions==========
+
+form.addEventListener('submit', formElemSubmit);
+
+function formElemSubmit(e) {
+  e.preventDefault();
+  gallery.innerHTML = '';
+  showLoader();
+  const inputData = e.target.elements.searchImg.value;
+  fetchImg(inputData)
+    .then(data => {
+      if (data.hits.length == 0) iziToast.show(iziToastOptions);
+
+      console.log(data.hits);
+      const markup = imagesTemplate(data.hits);
+      gallery.innerHTML = markup;
+      lightBox.refresh();
+    })
+    .catch(err => {
+      console.log(err);
+    })
+    .finally(() => {
+      closeLoader();
+    });
+}

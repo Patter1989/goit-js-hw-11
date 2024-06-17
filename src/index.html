@@ -9,19 +9,13 @@
   </head>
   <body>
     <section>
-    <form class="feedback-form" autocomplete="off">
-      <label>
-        <input type="text" name="searchImg" autofocus />
-      </label>
-      <button type="submit">Search</button>
+    <form class="search-form">
+      <input class="img-search" type="text" name="searchImg" placeholder="Search images..." autofocus />
+      <button class="form-button" type="submit">Search</button>
     </form>
-    <ul class="gallery">
-      
-    </ul>
+    <span class="loader visually-hidden"></span>
+    <ul class="gallery"></ul>
     </section>
-
-    <script type="module" src="./js/pixabay-api.js"></script>
-    <script type="module" src="./js/render-functions.js"></script>
     <script type="module" src="./main.js"></script>
   </body>
 </html>
