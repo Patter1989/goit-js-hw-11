@@ -46,14 +46,12 @@ function formElemSubmit(e) {
   fetchImg(inputData)
     .then(data => {
       if (data.hits.length == 0) iziToast.show(iziToastOptions);
-
-      console.log(data.hits);
       const markup = imagesTemplate(data.hits);
       gallery.innerHTML = markup;
       lightBox.refresh();
     })
     .catch(err => {
-      console.log(err);
+      iziToast.show(iziToastOptions);
     })
     .finally(() => {
       closeLoader();
